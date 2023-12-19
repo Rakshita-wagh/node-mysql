@@ -16,8 +16,20 @@ var con=mysql.createConnection(
   }
 )
 
-app.get('/send', (req, res) => {
-  fs.readFile('index.html', 'utf8', (err, data) => {
+app.get('/useradd', (req, res) => {
+  fs.readFile('useradd.html', 'utf8', (err, data) => {
+    if (err) throw err;
+    res.send(data);
+  });
+});
+app.get('/postadd', (req, res) => {
+  fs.readFile('postadd.html', 'utf8', (err, data) => {
+    if (err) throw err;
+    res.send(data);
+  });
+});
+app.get('/commentadd', (req, res) => {
+  fs.readFile('commentadd.html', 'utf8', (err, data) => {
     if (err) throw err;
     res.send(data);
   });
@@ -30,7 +42,7 @@ app.post('/done',urlencodedParser,(req,res)=>
   var reply='';
   var user_id=req.body.a;
   var user_name=req.body.b;
-  var user_email=req.body.c;
+  var user_mail=req.body.c;
   var post_id=req.body.d;
   var title=req.body.e;
   var content=req.body.f;
@@ -38,24 +50,24 @@ app.post('/done',urlencodedParser,(req,res)=>
   var comment_id=req.body.h;
   var comment=req.body.i;
  
-  var sql1=`INSERT INTO users(user_id,user_name,user_email) values (?,?,?)`
-  var sql2="INSERT INTO posts(post_id,title,content,user_id,date) values (?,?,?,?,?)"
-  var sql3="INSERT INTO comments(comment_id,post_id,user_id,comment) values (?,?,?,?)"
+  var sql1=`INSERT INTO users(user_name,user_mail) values (?,?)`
+  var sql2="INSERT INTO posts(title,content,user_id,date) values (?,?,?,?)"
+  var sql3="INSERT INTO comments(post_id,user_id,comment) values (?,?,?)"
 
 
   con.connect(function(err){
       if(err)throw err;
       console.log("Connected");
   });
-  con.query(sql1,[user_id,user_name,user_email],function(err,result){
+  con.query(sql1,[user_name,user_mail],function(err,result){
       if(err)throw err;
       res.write("rec inserted");
   });
-  con.query(sql2,[post_id,title,content,user_id,date],function(err,result){
+  con.query(sql2,[title,content,user_id,date],function(err,result){
       if(err)throw err;
       res.write("rec inserted");
   });
-  con.query(sql3,[comment_id,post_id,user_id,comment],function(err,result){
+  con.query(sql3,[post_id,user_id,comment],function(err,result){
       if(err)throw err;
       res.write("rec inserted");
   });
